@@ -288,7 +288,7 @@ public class GameServlet extends HttpServlet {
         String chosenCategory = ai.chooseScore(diceSet);
         
         game.getNotification().showMessage(
-            "AI chose: " + RuleEngine.getCategoryDisplayName(chosenCategory)
+            "AI chose: " + ScoreCard.getCategoryDisplayName(chosenCategory)
         );
         
         // Lanjut ke giliran berikutnya
@@ -366,7 +366,7 @@ public class GameServlet extends HttpServlet {
         AIPlayer ai = (AIPlayer) game.getCurrentPlayer();
         String chosenCategory = ai.chooseScore(game.getDiceSet());
         
-        String displayName = RuleEngine.getCategoryDisplayName(chosenCategory);
+        String displayName = ScoreCard.getCategoryDisplayName(chosenCategory);
         int score = ai.getScoreCard().getScore(chosenCategory);
         game.getNotification().showMessage(
             "AI scored " + score + " on " + displayName + "!"

@@ -37,9 +37,9 @@ public class AIPlayer extends Player {
         int bestScore = -1;
         
         // Cek satu-satu kategori yang masih bisa diisi
-        for (String category : RuleEngine.ALL_CATEGORIES) {
+        for (String category : ScoreCard.ALL_CATEGORIES) {
             if (scoreCard.isCategoryAvailable(category)) {
-                int score = RuleEngine.calculateScore(category, dices);
+                int score = scoreCard.calculateScore(category, dices);
                 if (score > bestScore) {
                     bestScore = score;
                     bestCategory = category;
@@ -67,12 +67,12 @@ public class AIPlayer extends Player {
     private String chooseSacrificeCategory(ScoreCard scoreCard) {
         // Urutan ngorbanin (dari yang paling gak penting)
         String[] sacrificeOrder = {
-            RuleEngine.ONES, RuleEngine.TWOS, RuleEngine.THREES,
-            RuleEngine.CHANCE, RuleEngine.FOURS,
-            RuleEngine.SMALL_STRAIGHT, RuleEngine.FIVES,
-            RuleEngine.THREE_OF_KIND, RuleEngine.FOUR_OF_KIND,
-            RuleEngine.SIXES, RuleEngine.FULL_HOUSE,
-            RuleEngine.LARGE_STRAIGHT, RuleEngine.YATZY
+            ScoreCard.ONES, ScoreCard.TWOS, ScoreCard.THREES,
+            ScoreCard.CHANCE, ScoreCard.FOURS,
+            ScoreCard.SMALL_STRAIGHT, ScoreCard.FIVES,
+            ScoreCard.THREE_OF_KIND, ScoreCard.FOUR_OF_KIND,
+            ScoreCard.SIXES, ScoreCard.FULL_HOUSE,
+            ScoreCard.LARGE_STRAIGHT, ScoreCard.YATZY
         };
         
         for (String category : sacrificeOrder) {

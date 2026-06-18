@@ -172,7 +172,7 @@ public class Game {
             
             // Skor per kategori
             Map<String, Object> scoresMap = new LinkedHashMap<>();
-            for (String category : RuleEngine.ALL_CATEGORIES) {
+            for (String category : ScoreCard.ALL_CATEGORIES) {
                 Integer score = p.getScoreCard().getScore(category);
                 scoresMap.put(category, score); // null kalo belom dipilih
             }
@@ -181,9 +181,9 @@ public class Game {
             // Potensi skor (cuma buat pemain yang lagi jalan)
             if (i == currentTurn && diceSet.getRollsLeft() < 3) {
                 Map<String, Object> potentialMap = new LinkedHashMap<>();
-                for (String category : RuleEngine.ALL_CATEGORIES) {
+                for (String category : ScoreCard.ALL_CATEGORIES) {
                     if (p.getScoreCard().isCategoryAvailable(category)) {
-                        int potential = RuleEngine.calculateScore(category, diceSet.getDices());
+                        int potential = p.getScoreCard().calculateScore(category, diceSet.getDices());
                         potentialMap.put(category, potential);
                     }
                 }
