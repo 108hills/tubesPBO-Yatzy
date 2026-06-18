@@ -1,9 +1,9 @@
 package com.yatzy.model;
 
 /**
- * Represents a human player in the Yatzy game.
- * Extends User (abstract class) and implements GameEntity (interface).
- * Demonstrates inheritance and interface implementation for OOP.
+ * Ngewakilin pemain manusia di game Yatzy.
+ * Ngewarisin User (abstract class) sama implement GameEntity (interface).
+ * Nunjukin penerapan inheritance sama interface di OOP.
  */
 public class Player extends User implements GameEntity {
     
@@ -11,10 +11,10 @@ public class Player extends User implements GameEntity {
     private String name;
     
     /**
-     * Constructs a Player with the given properties.
-     * @param id unique identifier
-     * @param username display name
-     * @param profileImage profile image path
+     * Bikin pemain baru pake data yang disediain.
+     * @param id ID unik pemain
+     * @param username nama yang bakal ditampilin
+     * @param profileImage path atau data URL foto profil
      */
     public Player(int id, String username, String profileImage) {
         super(id, username, profileImage);
@@ -23,25 +23,25 @@ public class Player extends User implements GameEntity {
     }
     
     /**
-     * Rolls the dice using the provided dice set.
-     * @param diceSet the dice set to roll
-     * @return true if roll was performed successfully
+     * Ngocok dadu pake set dadu yang lagi dimaenin.
+     * @param diceSet kumpulan dadunya
+     * @return true kalo berhasil dikocok
      */
     public boolean rollDice(DiceSet diceSet) {
         return diceSet.rollAll();
     }
     
     /**
-     * Chooses a scoring category and locks in the score.
-     * @param category the scoring category to choose
-     * @param diceSet the current dice set
-     * @return true if score was successfully set
+     * Milih kategori skor buat disimpen permanen.
+     * @param category kategori yang dipilih
+     * @param diceSet set dadu sekarang
+     * @return true kalo skornya sukses diset
      */
     public boolean chooseScore(String category, DiceSet diceSet) {
         return scoreCard.setScore(category, diceSet.getDices());
     }
     
-    // --- GameEntity interface implementation ---
+    // --- Implementasi interface GameEntity ---
     
     @Override
     public String getName() {
@@ -53,7 +53,7 @@ public class Player extends User implements GameEntity {
         System.out.println("Player: " + getName() + " | Score: " + scoreCard.getTotal());
     }
     
-    // --- Getters ---
+    // --- Method Getters ---
     
     public ScoreCard getScoreCard() {
         return scoreCard;

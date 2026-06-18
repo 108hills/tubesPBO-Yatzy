@@ -1,28 +1,33 @@
 package com.yatzy.model;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
- * AI-controlled player that automatically chooses scores.
- * Extends Player to demonstrate inheritance (AIPlayer → Player → User).
+ * Pemain yang dikendaliin AI buat otomatis milih skor.
+ * Ngewarisin kelas Player buat nunjukin konsep inheritance (AIPlayer → Player → User).
  */
 public class AIPlayer extends Player {
     
+    private static final List<String> AI_NAMES = Arrays.asList("BOT - Imrong", "BOT - Kadhim", "BOT - Rafi", "BOT - Arsha", "BOT - Hamud", "BOT - Pedil");
+    private static final Random RANDOM = new Random();
+
     /**
-     * Constructs an AIPlayer with a default AI profile.
-     * @param id unique identifier
+     * Bikin AIPlayer dengan profil AI bawaan.
+     * @param id ID unik buat pemainnya
      */
     public AIPlayer(int id) {
-        super(id, "AI Player", "ai");
+        super(id, AI_NAMES.get(RANDOM.nextInt(AI_NAMES.size())), "ai");
     }
     
     /**
-     * AI strategy to automatically choose the best available scoring category.
-     * Evaluates all available categories and picks the one with the highest score.
-     * If all yield 0, picks one to sacrifice (scores 0).
+     * Strategi AI buat otomatis milih kategori skor yang paling gede poinnya.
+     * Bakal ngecek semua kategori yang masih kosong, terus milih yang paling nguntungin.
+     * Kalo semuanya ngasilin 0, dia bakal milih satu buat dikorbanin (diisi 0).
      * 
-     * @param diceSet the current dice set
-     * @return the chosen category name
+     * @param diceSet set dadu yang lagi dipake
+     * @return nama kategori yang dipilih
      */
     public String chooseScore(DiceSet diceSet) {
         ScoreCard scoreCard = getScoreCard();
@@ -31,7 +36,7 @@ public class AIPlayer extends Player {
         String bestCategory = null;
         int bestScore = -1;
         
-        // Evaluate each available category
+        // Cek satu-satu kategori yang masih bisa diisi
         for (String category : RuleEngine.ALL_CATEGORIES) {
             if (scoreCard.isCategoryAvailable(category)) {
                 int score = RuleEngine.calculateScore(category, dices);
@@ -42,12 +47,12 @@ public class AIPlayer extends Player {
             }
         }
         
-        // If all available categories score 0, sacrifice the least valuable one
+        // Kalo semua kategori ngasilin skor 0, korbanin kategori yang paling gak berharga
         if (bestScore == 0) {
             bestCategory = chooseSacrificeCategory(scoreCard);
         }
         
-        // Lock in the score
+        // Kunci skornya
         if (bestCategory != null) {
             scoreCard.setScore(bestCategory, dices);
         }
@@ -56,11 +61,11 @@ public class AIPlayer extends Player {
     }
     
     /**
-     * When all available categories would score 0, choose the least valuable to sacrifice.
-     * Priority: sacrifice lower-value upper categories first.
+     * Pas semua kategori bakal ngasilin skor 0, milih kategori yang paling gak guna buat dikorbanin.
+     * Prioritasnya: ngorbanin kategori atas yang nilainya kecil dulu.
      */
     private String chooseSacrificeCategory(ScoreCard scoreCard) {
-        // Sacrifice priority (least valuable first)
+        // Urutan ngorbanin (dari yang paling gak penting)
         String[] sacrificeOrder = {
             RuleEngine.ONES, RuleEngine.TWOS, RuleEngine.THREES,
             RuleEngine.CHANCE, RuleEngine.FOURS,
@@ -79,9 +84,9 @@ public class AIPlayer extends Player {
     }
     
     /**
-     * AI decides which dice to hold based on current best strategy.
-     * Holds dice that contribute to the most promising scoring category.
-     * @param diceSet the current dice set
+     * AI mikir dadu mana yang mau ditahan berdasarin strategi dasar.
+     * Nahan dadu yang nilainya paling sering muncul biar gampang dapet skor gede.
+     * @param diceSet set dadu yang sekarang
      */
     public void decideDiceHolds(DiceSet diceSet) {
         List<Dice> dices = diceSet.getDices();
@@ -90,7 +95,7 @@ public class AIPlayer extends Player {
             counts[d.getValue()]++;
         }
         
-        // Find the most common value
+        // Cari angka dadu mana yang paling sering muncul
         int bestValue = 1;
         int bestCount = 0;
         for (int i = 1; i <= 6; i++) {
@@ -100,7 +105,7 @@ public class AIPlayer extends Player {
             }
         }
         
-        // Hold dice matching the most common value (basic strategy)
+        // Tahan dadu yang angkanya paling banyak (strategi simpel aja)
         if (bestCount >= 2) {
             for (int i = 0; i < dices.size(); i++) {
                 if (dices.get(i).getValue() == bestValue) {
@@ -114,6 +119,6 @@ public class AIPlayer extends Player {
     
     @Override
     public void display() {
-        System.out.println("AI Player | Score: " + getScoreCard().getTotal());
+        System.out.println(getName() + " | Score: " + getScoreCard().getTotal());
     }
 }

@@ -1,9 +1,9 @@
 package com.yatzy.model;
 
 /**
- * Abstract base class representing a user in the system.
- * Provides common properties shared by all user types (Player, AIPlayer).
- * Demonstrates abstract class usage for OOP specification.
+ * Kelas dasar abstract yang ngewakilin user di dalem sistem.
+ * Nyediain properti umum yang dipake sama semua jenis user (Player, AIPlayer).
+ * Nunjukin penerapan abstract class buat spesifikasi OOP.
  */
 public abstract class User {
     
@@ -12,10 +12,10 @@ public abstract class User {
     private String profileImage;
     
     /**
-     * Constructs a User with the given properties.
-     * @param id unique identifier
-     * @param username display name
-     * @param profileImage path or URL to profile image
+     * Bikin User pake data yang disediain.
+     * @param id ID uniknya
+     * @param username nama yang mau ditampilin
+     * @param profileImage path atau URL ke foto profil
      */
     public User(int id, String username, String profileImage) {
         this.id = id;
@@ -23,7 +23,7 @@ public abstract class User {
         this.profileImage = profileImage;
     }
     
-    // --- Getters and Setters ---
+    // --- Method Getters sama Setters ---
     
     public int getId() {
         return id;

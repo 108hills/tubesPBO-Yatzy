@@ -5,42 +5,42 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a player's scorecard tracking scores for all 13 Yatzy categories.
- * Uses a Map to store category → score mappings. Null value means not yet chosen.
+ * Kartu skor pemain, nyimpen skor buat 13 kategori di Yatzy.
+ * Pake Map buat nyimpen kategori → skor. Kalo nilainya null, berarti belom diisi.
  */
 public class ScoreCard {
     
     private Map<String, Integer> scores;
     
     /**
-     * Constructs a new empty ScoreCard with all categories unset.
+     * Bikin kartu skor baru yang masih kosong.
      */
     public ScoreCard() {
         this.scores = new LinkedHashMap<>();
         for (String category : RuleEngine.ALL_CATEGORIES) {
-            scores.put(category, null); // null = not yet chosen
+            scores.put(category, null); // null = belom dipilih
         }
     }
     
     /**
-     * Calculates what the score would be for a category without locking it in.
-     * @param category the scoring category
-     * @param dices the current dice
-     * @return the potential score
+     * Ngitung kira-kira dapet skor berapa buat kategori tertentu tanpa nge-lock skornya.
+     * @param category kategori skor
+     * @param dices posisi dadu sekarang
+     * @return potensi skor yang didapet
      */
     public int calculateScore(String category, List<Dice> dices) {
         return RuleEngine.calculateScore(category, dices);
     }
     
     /**
-     * Locks in a score for the given category based on current dice.
-     * @param category the scoring category
-     * @param dices the current dice
-     * @return true if score was set, false if category already taken
+     * Ngunci skor di kategori tertentu pake dadu yang ada sekarang.
+     * @param category kategori skor
+     * @param dices dadu yang dipake
+     * @return true kalo berhasil diset, false kalo kategorinya udah keisi
      */
     public boolean setScore(String category, List<Dice> dices) {
         if (scores.get(category) != null) {
-            return false; // Already scored
+            return false; // Udah diisi sebelumnya
         }
         int score = RuleEngine.calculateScore(category, dices);
         scores.put(category, score);
@@ -48,9 +48,9 @@ public class ScoreCard {
     }
     
     /**
-     * Gets the total score across all filled categories.
-     * Includes upper section bonus (35 points if upper sum >= 63).
-     * @return total score
+     * Ngitung total skor dari semua kategori yang udah diisi.
+     * Sekalian nambahin bonus 35 poin kalo total bagian atas >= 63.
+     * @return skor total keseluruhan
      */
     public int getTotal() {
         int total = 0;
@@ -59,14 +59,14 @@ public class ScoreCard {
                 total += score;
             }
         }
-        // Upper section bonus
+        // Tambahin bonus bagian atas
         total += getUpperBonus();
         return total;
     }
     
     /**
-     * Gets the sum of the upper section (Ones through Sixes).
-     * @return upper section sum
+     * Notalin skor bagian atas doang (dari Ones sampe Sixes).
+     * @return total skor bagian atas
      */
     public int getUpperSum() {
         int sum = 0;
@@ -80,16 +80,16 @@ public class ScoreCard {
     }
     
     /**
-     * Gets the upper section bonus (35 if upper sum >= 63, else 0).
-     * @return bonus amount
+     * Ngitung bonus bagian atas (dapet 35 kalo skor bagian atas >= 63).
+     * @return poin bonusnya
      */
     public int getUpperBonus() {
         return getUpperSum() >= 63 ? 35 : 0;
     }
     
     /**
-     * Checks if all 13 categories have been filled.
-     * @return true if scorecard is complete
+     * Ngecek apa ke-13 kategori udah keisi semua.
+     * @return true kalo kartu skor udah penuh
      */
     public boolean isFull() {
         for (Integer score : scores.values()) {
@@ -101,26 +101,26 @@ public class ScoreCard {
     }
     
     /**
-     * Checks if a specific category is still available.
-     * @param category the category to check
-     * @return true if category has not been scored yet
+     * Ngecek apa kategori tertentu masih bisa dipilih.
+     * @param category kategori yang mau dicek
+     * @return true kalo kategorinya belom ada skornya
      */
     public boolean isCategoryAvailable(String category) {
         return scores.containsKey(category) && scores.get(category) == null;
     }
     
     /**
-     * Gets the score for a specific category.
-     * @param category the category
-     * @return the score, or null if not yet chosen
+     * Ngambil skor buat kategori tertentu.
+     * @param category nama kategorinya
+     * @return poin skornya, atau null kalo belom diisi
      */
     public Integer getScore(String category) {
         return scores.get(category);
     }
     
     /**
-     * Gets the full scores map.
-     * @return map of category → score (null = not yet chosen)
+     * Ngambil semua skor sekaligus.
+     * @return map kategori → skor (null kalo belom dipilih)
      */
     public Map<String, Integer> getScores() {
         return scores;

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a set of 5 dice used in a Yatzy game.
- * Manages rolling, holding, and releasing dice.
+ * Kumpulan 5 dadu yang dipake main Yatzy.
+ * Ngatur urusan ngocok, nahan, sama ngelepas dadu.
  */
 public class DiceSet {
     
@@ -16,7 +16,7 @@ public class DiceSet {
     public static final int MAX_ROLLS = 3;
     
     /**
-     * Constructs a DiceSet with 5 dice, ready for a new turn.
+     * Bikin set dadu baru (5 biji), siap buat giliran baru.
      */
     public DiceSet() {
         this.dices = new ArrayList<>();
@@ -27,8 +27,8 @@ public class DiceSet {
     }
     
     /**
-     * Rolls all non-held dice. Increments roll count.
-     * @return true if roll was performed (rolls remaining), false otherwise
+     * Ngocok semua dadu yang nggak ditahan. Jatah ngocok nambah 1.
+     * @return true kalo berhasil ngocok (masih ada jatah), false kalo udah abis jatahnya
      */
     public boolean rollAll() {
         if (rollsCount >= MAX_ROLLS) {
@@ -42,8 +42,8 @@ public class DiceSet {
     }
     
     /**
-     * Holds a die at the specified index (prevents it from being rolled).
-     * @param index die index (0-4)
+     * Nahan dadu di posisi tertentu (biar nggak ikutan dikocok).
+     * @param index posisi dadu (0-4)
      */
     public void holdDice(int index) {
         if (index >= 0 && index < MAX_DICE) {
@@ -52,8 +52,8 @@ public class DiceSet {
     }
     
     /**
-     * Releases a held die at the specified index (allows it to be rolled again).
-     * @param index die index (0-4)
+     * Ngelepas dadu yang lagi ditahan (biar bisa dikocok lagi).
+     * @param index posisi dadu (0-4)
      */
     public void releaseDice(int index) {
         if (index >= 0 && index < MAX_DICE) {
@@ -62,8 +62,8 @@ public class DiceSet {
     }
     
     /**
-     * Toggles the held state of a die at the specified index.
-     * @param index die index (0-4)
+     * Ganti status dadu, kalo tadinya ditahan jadi dilepas, dan sebaliknya.
+     * @param index posisi dadu (0-4)
      */
     public void toggleHold(int index) {
         if (index >= 0 && index < MAX_DICE) {
@@ -73,7 +73,7 @@ public class DiceSet {
     }
     
     /**
-     * Resets for a new turn: releases all dice and resets roll count.
+     * Reset buat giliran baru: ngelepas semua kuncian dadu sama ngenolin jumlah kocokan.
      */
     public void resetTurn() {
         for (Dice dice : dices) {
@@ -83,8 +83,8 @@ public class DiceSet {
     }
     
     /**
-     * Gets the list of all dice values.
-     * @return list of integer values (1-6)
+     * Ngambil list angka dari semua dadu.
+     * @return list angka (1-6)
      */
     public List<Integer> getValues() {
         List<Integer> values = new ArrayList<>();
@@ -94,7 +94,7 @@ public class DiceSet {
         return values;
     }
     
-    // --- Getters ---
+    // --- Method Getters ---
     
     public List<Dice> getDices() {
         return dices;

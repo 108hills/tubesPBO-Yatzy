@@ -6,21 +6,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Main game coordinator class. Manages players, turns, dice, and game flow.
- * Holds all game state and provides methods to control gameplay.
+ * Kelas utama yang ngatur jalannya game. Ngurusin pemain, giliran, dadu, sama alur mainnya.
+ * Nyimpen semua status game dan nyediain fungsi buat ngendaliin gamenya.
  */
 public class Game {
     
     private List<Player> players;
-    private int currentTurn; // index of current player
+    private int currentTurn; // index pemain yang lagi jalan
     private DiceSet diceSet;
     private Notification notification;
     private boolean gameStarted;
     private boolean gameOver;
-    private String mode; // "single" or "multi"
+    private String mode; // "single" atau "multi"
     
     /**
-     * Constructs a new Game instance.
+     * Bikin objek Game baru.
      */
     public Game() {
         this.players = new ArrayList<>();
@@ -32,18 +32,18 @@ public class Game {
     }
     
     /**
-     * Starts a new game with the specified mode and player details.
-     * @param mode "single" for singleplayer (vs AI) or "multi" for multiplayer (pass-and-play)
-     * @param p1Name Player 1 name
-     * @param p1Image Player 1 profile image (base64 data URL or identifier)
-     * @param p2Name Player 2 name (ignored in single mode)
-     * @param p2Image Player 2 profile image (ignored in single mode)
+     * Mulai game baru sesuai mode sama data pemainnya.
+     * @param mode "single" buat singleplayer (lawan AI) atau "multi" buat multiplayer
+     * @param p1Name Nama pemain 1
+     * @param p1Image Foto profil pemain 1
+     * @param p2Name Nama pemain 2 (dicuekin kalo mode single)
+     * @param p2Image Foto profil pemain 2 (dicuekin kalo mode single)
      */
     public void startGame(String mode, String p1Name, String p1Image, String p2Name, String p2Image) {
         this.mode = mode;
         this.players.clear();
         
-        // Default names if empty
+        // Kasih nama default kalo kosong
         if (p1Name == null || p1Name.trim().isEmpty()) p1Name = "Player 1";
         if (p2Name == null || p2Name.trim().isEmpty()) p2Name = "Player 2";
         if (p1Image == null || p1Image.trim().isEmpty()) p1Image = "";
@@ -66,14 +66,14 @@ public class Game {
     }
     
     /**
-     * Advances to the next player's turn.
-     * Resets dice for the new turn.
+     * Lanjut ke giliran pemain berikutnya.
+     * Sekalian ngereset dadu buat giliran baru.
      */
     public void nextTurn() {
         currentTurn = (currentTurn + 1) % players.size();
         diceSet.resetTurn();
         
-        // Check if game is over
+        // Cek kalo gamenya udah kelar
         if (checkGameOver()) {
             this.gameOver = true;
             notification.showMessage("Game Over!");
@@ -83,8 +83,8 @@ public class Game {
     }
     
     /**
-     * Determines the winner by comparing total scores.
-     * @return the winning Player, or null if tie
+     * Nentuin siapa pemenangnya dengan bandingin total skor.
+     * @return Pemain yang menang, atau null kalo seri
      */
     public Player checkWinner() {
         if (!gameOver) return null;
@@ -104,8 +104,8 @@ public class Game {
     }
     
     /**
-     * Checks if all players have filled their scorecards.
-     * @return true if game is over
+     * Ngecek apa semua pemain udah ngisi penuh scorecard-nya.
+     * @return true kalo game udah beres
      */
     private boolean checkGameOver() {
         for (Player player : players) {
@@ -117,24 +117,24 @@ public class Game {
     }
     
     /**
-     * Gets the currently active player.
-     * @return the current Player
+     * Ngambil data pemain yang sekarang lagi jalan.
+     * @return objek Player yang lagi aktif
      */
     public Player getCurrentPlayer() {
         return players.get(currentTurn);
     }
     
     /**
-     * Checks if the current player is an AI player.
-     * @return true if current player is AI
+     * Ngecek apa pemain yang sekarang lagi jalan itu AI.
+     * @return true kalo pemainnya AI
      */
     public boolean isCurrentPlayerAI() {
         return getCurrentPlayer() instanceof AIPlayer;
     }
     
     /**
-     * Serializes the full game state to a Map for JSON conversion.
-     * @return map representing the complete game state
+     * Ngebungkus semua status game ke dalem Map biar gampang dijadiin JSON.
+     * @return map yang isinya status game lengkap
      */
     public Map<String, Object> toMap() {
         Map<String, Object> state = new LinkedHashMap<>();
@@ -145,7 +145,7 @@ public class Game {
         state.put("rollsLeft", diceSet.getRollsLeft());
         state.put("canRoll", diceSet.canRoll());
         
-        // Dice values and held states
+        // Data dadu sama status ditahan apa nggaknya
         List<Map<String, Object>> diceList = new ArrayList<>();
         for (int i = 0; i < diceSet.getDices().size(); i++) {
             Dice d = diceSet.getDices().get(i);
@@ -157,7 +157,7 @@ public class Game {
         }
         state.put("dice", diceList);
         
-        // Players and their scorecards
+        // Data pemain sama scorecard mereka
         List<Map<String, Object>> playerList = new ArrayList<>();
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
@@ -170,15 +170,15 @@ public class Game {
             playerMap.put("upperSum", p.getScoreCard().getUpperSum());
             playerMap.put("upperBonus", p.getScoreCard().getUpperBonus());
             
-            // Scores per category
+            // Skor per kategori
             Map<String, Object> scoresMap = new LinkedHashMap<>();
             for (String category : RuleEngine.ALL_CATEGORIES) {
                 Integer score = p.getScoreCard().getScore(category);
-                scoresMap.put(category, score); // null if not yet chosen
+                scoresMap.put(category, score); // null kalo belom dipilih
             }
             playerMap.put("scores", scoresMap);
             
-            // Potential scores (only for current player)
+            // Potensi skor (cuma buat pemain yang lagi jalan)
             if (i == currentTurn && diceSet.getRollsLeft() < 3) {
                 Map<String, Object> potentialMap = new LinkedHashMap<>();
                 for (String category : RuleEngine.ALL_CATEGORIES) {
@@ -194,7 +194,7 @@ public class Game {
         }
         state.put("players", playerList);
         
-        // Winner (if game over)
+        // Data pemenang (kalo game udah kelar)
         if (gameOver) {
             Player winner = checkWinner();
             if (winner != null) {
@@ -203,7 +203,7 @@ public class Game {
             }
         }
         
-        // Notification
+        // Notifikasi game
         state.put("notification", notification.getMessage());
         
         return state;

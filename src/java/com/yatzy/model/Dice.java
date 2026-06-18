@@ -3,8 +3,8 @@ package com.yatzy.model;
 import java.util.Random;
 
 /**
- * Represents a single die that can be rolled.
- * Implements the Rollable interface.
+ * Ngewakilin satu dadu yang bisa dikocok.
+ * Pake interface Rollable.
  */
 public class Dice implements Rollable {
     
@@ -13,7 +13,7 @@ public class Dice implements Rollable {
     private static final Random random = new Random();
     
     /**
-     * Constructs a Dice with initial value of 0 (not yet rolled).
+     * Bikin objek Dadu dengan nilai awal 0 (belom dikocok).
      */
     public Dice() {
         this.value = 0;
@@ -21,8 +21,8 @@ public class Dice implements Rollable {
     }
     
     /**
-     * Rolls the die to produce a random value between 1 and 6.
-     * Only rolls if the die is not currently held.
+     * Ngocok dadu dapet angka random 1 sampe 6.
+     * Cuma dikocok kalo dadunya lagi nggak ditahan.
      */
     @Override
     public void roll() {
@@ -32,24 +32,24 @@ public class Dice implements Rollable {
     }
     
     /**
-     * Gets the current face value of the die.
-     * @return value between 1-6, or 0 if not yet rolled
+     * Ngambil angka dadu yang sekarang.
+     * @return angka 1-6, atau 0 kalo belom dikocok
      */
     public int getValue() {
         return value;
     }
     
     /**
-     * Checks if this die is being held (excluded from rolling).
-     * @return true if held
+     * Ngecek apa dadu ini lagi ditahan (gak ikutan dikocok).
+     * @return true kalo ditahan
      */
     public boolean isHeld() {
         return held;
     }
     
     /**
-     * Sets the held state of this die.
-     * @param held true to hold, false to release
+     * Ngatur status dadu ini mau ditahan apa nggak.
+     * @param held true kalo mau ditahan, false buat dilepas
      */
     public void setHeld(boolean held) {
         this.held = held;

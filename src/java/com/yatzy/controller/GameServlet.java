@@ -12,17 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Main servlet controller for the Yatzy game.
- * Handles all game actions via the "action" query parameter.
- * Game state is stored in HttpSession.
+ * Servlet controller utama buat game Yatzy.
+ * Ngatur semua aksi di game lewat parameter query "action".
+ * Status gamenya disimpen di HttpSession.
  * 
- * Endpoints:
- *   GET  ?action=state              → Returns current game state as JSON
- *   POST ?action=start&mode=X       → Starts a new game (single/multi)
- *   POST ?action=roll               → Rolls all non-held dice
- *   POST ?action=hold&index=N       → Toggles hold on die at index
- *   POST ?action=score&category=X   → Locks in score for category
- *   POST ?action=aiturn             → Executes a full AI turn
+ * Daftar Endpoint:
+ *   GET  ?action=state              - Ngambil status game sekarang (format JSON)
+ *   POST ?action=start&mode=X       - Mulai game baru (single/multi)
+ *   POST ?action=roll               - Ngocok semua dadu yang nggak ditahan
+ *   POST ?action=hold&index=N       - Nahan/ngelepas dadu di index tertentu
+ *   POST ?action=score&category=X   - Ngunci skor buat kategori yang dipilih
+ *   POST ?action=aiturn             - Ngeksekusi giliran AI secara penuh
  */
 @WebServlet(name = "GameServlet", urlPatterns = {"/api/game"})
 public class GameServlet extends HttpServlet {
@@ -30,7 +30,7 @@ public class GameServlet extends HttpServlet {
     private static final String GAME_SESSION_KEY = "yatzyGame";
     
     /**
-     * Gets or creates a Game object from the session.
+     * Ngambil atau bikin objek Game baru dari session.
      */
     private Game getGame(HttpSession session) {
         Game game = (Game) session.getAttribute(GAME_SESSION_KEY);
@@ -42,7 +42,7 @@ public class GameServlet extends HttpServlet {
     }
     
     /**
-     * Sends a JSON response to the client.
+     * Ngirim balasan JSON ke client.
      */
     private void sendJsonResponse(HttpServletResponse response, String json) throws IOException {
         response.setContentType("application/json");
@@ -54,7 +54,7 @@ public class GameServlet extends HttpServlet {
     }
     
     /**
-     * Sends the current game state as a JSON response.
+     * Ngirim status game sekarang dalam bentuk JSON.
      */
     private void sendGameState(HttpServletResponse response, Game game) throws IOException {
         String json = mapToJson(game.toMap());
@@ -62,7 +62,7 @@ public class GameServlet extends HttpServlet {
     }
     
     /**
-     * Sends an error response.
+     * Ngirim pesen error kalo ada yang salah.
      */
     private void sendError(HttpServletResponse response, String message) throws IOException {
         String json = "{\"error\":\"" + escapeJson(message) + "\"}";
@@ -70,7 +70,7 @@ public class GameServlet extends HttpServlet {
         sendJsonResponse(response, json);
     }
     
-    // --- GET Handler ---
+    // --- Handler buat GET ---
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -87,7 +87,7 @@ public class GameServlet extends HttpServlet {
         }
     }
     
-    // --- POST Handler ---
+    // --- Handler buat POST ---
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -133,7 +133,7 @@ public class GameServlet extends HttpServlet {
     }
     
     /**
-     * Handles starting a new game.
+     * Ngurusin proses mulai game baru.
      */
     private void handleStart(HttpServletRequest request, HttpServletResponse response,
                              HttpSession session, Game game) throws IOException {
@@ -143,13 +143,13 @@ public class GameServlet extends HttpServlet {
             return;
         }
         
-        // Extract player details
+        // Ambil detail pemain
         String p1Name = request.getParameter("p1name");
         String p1Image = request.getParameter("p1image");
         String p2Name = request.getParameter("p2name");
         String p2Image = request.getParameter("p2image");
         
-        // Create a fresh game
+        // Bikin game baru yang fresh
         game = new Game();
         game.startGame(mode, p1Name, p1Image, p2Name, p2Image);
         session.setAttribute(GAME_SESSION_KEY, game);
@@ -158,7 +158,7 @@ public class GameServlet extends HttpServlet {
     }
     
     /**
-     * Handles rolling the dice.
+     * Ngurusin aksi ngocok dadu.
      */
     private void handleRoll(HttpServletResponse response, Game game) throws IOException {
         if (!game.isGameStarted() || game.isGameOver()) {
@@ -183,7 +183,7 @@ public class GameServlet extends HttpServlet {
     }
     
     /**
-     * Handles toggling a die's held state.
+     * Ngurusin ganti status dadu (ditahan atau dilepas).
      */
     private void handleHold(HttpServletRequest request, HttpServletResponse response,
                             Game game) throws IOException {
@@ -192,7 +192,7 @@ public class GameServlet extends HttpServlet {
             return;
         }
         
-        // Can only hold dice after first roll
+        // Cuma bisa nahan dadu abis kocokan pertama
         if (game.getDiceSet().getRollsLeft() == 3) {
             sendError(response, "Roll the dice first.");
             return;
@@ -214,7 +214,7 @@ public class GameServlet extends HttpServlet {
     }
     
     /**
-     * Handles choosing a scoring category.
+     * Ngurusin pemilihan kategori skor.
      */
     private void handleScore(HttpServletRequest request, HttpServletResponse response,
                              Game game, HttpSession session) throws IOException {
@@ -223,7 +223,7 @@ public class GameServlet extends HttpServlet {
             return;
         }
         
-        // Must roll at least once before scoring
+        // Harus ngocok minimal sekali sebelum milih skor
         if (game.getDiceSet().getRollsLeft() == 3) {
             sendError(response, "Roll the dice first.");
             return;
@@ -243,7 +243,7 @@ public class GameServlet extends HttpServlet {
             return;
         }
         
-        // Advance to next turn
+        // Lanjut ke giliran berikutnya
         game.nextTurn();
         session.setAttribute(GAME_SESSION_KEY, game);
         
@@ -251,7 +251,7 @@ public class GameServlet extends HttpServlet {
     }
     
     /**
-     * Handles a full AI turn (roll up to 3 times, then choose best category).
+     * Ngurusin satu giliran penuh AI (maksimal 3 kali kocok, terus milih skor).
      */
     private void handleAITurn(HttpServletResponse response, Game game, HttpSession session) 
             throws IOException {
@@ -268,30 +268,30 @@ public class GameServlet extends HttpServlet {
         AIPlayer ai = (AIPlayer) game.getCurrentPlayer();
         DiceSet diceSet = game.getDiceSet();
         
-        // AI performs its rolls (up to 3)
-        // First roll
+        // AI mulai ngocok (bisa sampe 3 kali)
+        // Kocokan pertama
         ai.rollDice(diceSet);
         
-        // Second roll with hold strategy
+        // Kocokan kedua pake strategi nahan dadu
         if (diceSet.canRoll()) {
             ai.decideDiceHolds(diceSet);
             ai.rollDice(diceSet);
         }
         
-        // Third roll with updated holds
+        // Kocokan ketiga sekalian nge-update dadu yang ditahan
         if (diceSet.canRoll()) {
             ai.decideDiceHolds(diceSet);
             ai.rollDice(diceSet);
         }
         
-        // Choose the best category
+        // Pilih kategori yang skornya paling gede
         String chosenCategory = ai.chooseScore(diceSet);
         
         game.getNotification().showMessage(
             "AI chose: " + RuleEngine.getCategoryDisplayName(chosenCategory)
         );
         
-        // Advance to next turn
+        // Lanjut ke giliran berikutnya
         game.nextTurn();
         session.setAttribute(GAME_SESSION_KEY, game);
         
@@ -299,7 +299,7 @@ public class GameServlet extends HttpServlet {
     }
     
     /**
-     * AI step 1: Rolls the dice (single roll for the AI).
+     * AI step 1: Ngocok dadu (cuma ngocok doang buat giliran AI).
      */
     private void handleAIRoll(HttpServletResponse response, Game game, HttpSession session) 
             throws IOException {
@@ -329,7 +329,7 @@ public class GameServlet extends HttpServlet {
     }
     
     /**
-     * AI step 2: Decides which dice to hold.
+     * AI step 2: Mikir mau nahan dadu yang mana.
      */
     private void handleAIHold(HttpServletResponse response, Game game, HttpSession session) 
             throws IOException {
@@ -350,7 +350,7 @@ public class GameServlet extends HttpServlet {
     }
     
     /**
-     * AI step 3: Chooses the best scoring category and advances the turn.
+     * AI step 3: Milih skor dan lanjutin ke giliran berikutnya.
      */
     private void handleAIScore(HttpServletResponse response, Game game, HttpSession session) 
             throws IOException {
@@ -372,19 +372,19 @@ public class GameServlet extends HttpServlet {
             "AI scored " + score + " on " + displayName + "!"
         );
         
-        // Advance to next turn
+        // Lanjut ke giliran berikutnya
         game.nextTurn();
         session.setAttribute(GAME_SESSION_KEY, game);
         sendGameState(response, game);
     }
     
     // ============================================================
-    // Simple JSON serialization (no external libraries needed)
+    // Serialisasi JSON simpel (nggak perlu library eksternal)
     // ============================================================
     
     /**
-     * Converts a Map to a JSON string manually.
-     * Handles nested Maps, Lists, Strings, Numbers, Booleans, and null.
+     * Ngubah Map jadi string JSON secara manual.
+     * Bisa nanganin Map dalem Map, List, String, Angka, Boolean, sama null.
      */
     @SuppressWarnings("unchecked")
     private String mapToJson(Map<String, Object> map) {

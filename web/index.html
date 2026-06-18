@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yatzy - Dice Game</title>
-    <meta name="description" content="Play the classic Yatzy dice game. Challenge the AI in singleplayer or play with a friend in local multiplayer pass-and-play mode.">
+    <meta name="description"
+        content="Play the classic Yatzy dice game. Challenge the AI in singleplayer or play with a friend in local multiplayer pass-and-play mode.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-    <!-- ============ MENU SCREEN ============ -->
+    <!-- ============ LAYAR MENU ============ -->
     <div id="menu-screen" class="screen active">
+        <audio id="menu-audio" autoplay loop>
+            <source src="assets/music/menu.mp3" type="audio/mpeg">
+        </audio>
         <div class="menu-background"></div>
         <div class="menu-content">
             <div class="title-container">
@@ -33,16 +41,17 @@
         </div>
     </div>
 
-    <!-- ============ SETUP SCREEN ============ -->
+    <!-- ============ LAYAR SETUP ============ -->
     <div id="setup-screen" class="screen">
         <div class="menu-background"></div>
         <div class="setup-content">
             <h2 class="setup-title">Player Setup</h2>
 
-            <!-- Player 1 Setup -->
+            <!-- Setup Pemain 1 -->
             <div class="setup-player" id="setup-player-1">
                 <div class="setup-avatar-wrapper">
-                    <div class="setup-avatar" id="setup-avatar-1" onclick="document.getElementById('avatar-input-1').click()">
+                    <div class="setup-avatar" id="setup-avatar-1"
+                        onclick="document.getElementById('avatar-input-1').click()">
                         <span class="setup-avatar-text">P1</span>
                         <div class="setup-avatar-overlay">📷</div>
                     </div>
@@ -51,14 +60,16 @@
                 </div>
                 <div class="setup-fields">
                     <label class="setup-label" for="input-name-1">Player 1</label>
-                    <input type="text" id="input-name-1" class="setup-input" placeholder="Enter your name..." maxlength="20" autocomplete="off">
+                    <input type="text" id="input-name-1" class="setup-input" placeholder="Enter your name..."
+                        maxlength="20" autocomplete="off">
                 </div>
             </div>
 
-            <!-- Player 2 Setup (shown only in multiplayer) -->
+            <!-- Setup Pemain 2 (cuma ditampilin kalo mode multiplayer) -->
             <div class="setup-player" id="setup-player-2" style="display: none;">
                 <div class="setup-avatar-wrapper">
-                    <div class="setup-avatar" id="setup-avatar-2" onclick="document.getElementById('avatar-input-2').click()">
+                    <div class="setup-avatar" id="setup-avatar-2"
+                        onclick="document.getElementById('avatar-input-2').click()">
                         <span class="setup-avatar-text">P2</span>
                         <div class="setup-avatar-overlay">📷</div>
                     </div>
@@ -67,11 +78,12 @@
                 </div>
                 <div class="setup-fields">
                     <label class="setup-label" for="input-name-2">Player 2</label>
-                    <input type="text" id="input-name-2" class="setup-input" placeholder="Enter your name..." maxlength="20" autocomplete="off">
+                    <input type="text" id="input-name-2" class="setup-input" placeholder="Enter your name..."
+                        maxlength="20" autocomplete="off">
                 </div>
             </div>
 
-            <!-- AI indicator (shown only in singleplayer) -->
+            <!-- Indikator AI (cuma ditampilin kalo mode singleplayer) -->
             <div class="setup-player setup-ai" id="setup-ai-indicator" style="display: none;">
                 <div class="setup-avatar-wrapper">
                     <div class="setup-avatar ai-avatar">
@@ -80,7 +92,7 @@
                 </div>
                 <div class="setup-fields">
                     <label class="setup-label">Opponent</label>
-                    <span class="setup-ai-name">AI Player</span>
+                    <span class="setup-ai-name">BOT - Random</span>
                 </div>
             </div>
 
@@ -91,10 +103,14 @@
         </div>
     </div>
 
-    <!-- ============ GAME SCREEN ============ -->
+    <!-- ============ LAYAR UTAMA GAME ============ -->
     <div id="game-screen" class="screen">
-        
-        <!-- Player Avatars -->
+
+        <audio id="game-audio" autoplay loop>
+            <source src="assets/music/in game music.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- Avatar Pemain -->
         <div id="player-avatar-1" class="player-avatar avatar-top-left">
             <div class="avatar-ring">
                 <div class="avatar-inner">P1</div>
@@ -108,10 +124,10 @@
             <span class="avatar-name">Player 2</span>
         </div>
 
-        <!-- Game Board -->
+        <!-- Papan Game -->
         <div class="game-board">
             <div class="board-inner">
-                <!-- Held Dice Row (top) -->
+                <!-- Baris buat dadu yang ditahan (atas) -->
                 <div class="dice-row held-row">
                     <div class="held-slot" id="held-slot-0"></div>
                     <div class="held-slot" id="held-slot-1"></div>
@@ -120,12 +136,12 @@
                     <div class="held-slot" id="held-slot-4"></div>
                 </div>
 
-                <!-- Roll Info -->
+                <!-- Info Lemparan -->
                 <div class="roll-info">
                     <span id="rolls-left-text">3 Rolls Left</span>
                 </div>
 
-                <!-- Active Dice Row (bottom) -->
+                <!-- Baris dadu aktif (bawah) -->
                 <div class="dice-row active-row">
                     <div class="dice-wrapper" id="dice-wrapper-0">
                         <div class="dice" id="dice-0" onclick="toggleHold(0)"></div>
@@ -144,7 +160,7 @@
                     </div>
                 </div>
 
-                <!-- Dice Cup (clickable to roll) -->
+                <!-- Gelas Dadu (bisa diklik buat ngocok) -->
                 <div class="dice-cup" id="btn-roll" onclick="rollDice()" title="Click to roll dice!">
                     <div class="cup-rim"></div>
                     <div class="cup-body">
@@ -154,7 +170,7 @@
             </div>
         </div>
 
-        <!-- Scorecard -->
+        <!-- Kartu Skor -->
         <div class="scorecard-container">
             <table class="scorecard" id="scorecard-table">
                 <thead>
@@ -253,13 +269,13 @@
             </table>
         </div>
 
-        <!-- Turn Notification -->
+        <!-- Notifikasi Giliran -->
         <div id="notification-toast" class="notification-toast hidden">
             <span id="notification-text"></span>
         </div>
     </div>
 
-    <!-- ============ RESULT OVERLAY ============ -->
+    <!-- ============ LAYAR HASIL AKHIR ============ -->
     <div id="result-overlay" class="result-overlay hidden">
         <div class="result-content">
             <h2 id="result-text" class="result-text">YOU WON!</h2>
@@ -272,4 +288,5 @@
 
     <script src="js/app.js"></script>
 </body>
+
 </html>

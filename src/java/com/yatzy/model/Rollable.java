@@ -1,13 +1,13 @@
 package com.yatzy.model;
 
 /**
- * Interface for objects that can be rolled (e.g., dice).
- * Demonstrates interface usage for OOP specification.
+ * Interface buat objek yang bisa dikocok (kayak dadu).
+ * Nunjukin cara pake interface buat spesifikasi OOP.
  */
 public interface Rollable {
     
     /**
-     * Performs a roll action.
+     * Ngeksekusi aksi ngocok dadu.
      */
     void roll();
 }

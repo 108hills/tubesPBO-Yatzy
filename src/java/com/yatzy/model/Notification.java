@@ -1,7 +1,7 @@
 package com.yatzy.model;
 
 /**
- * Handles game notifications and messages displayed to players.
+ * Ngurusin notifikasi sama pesen-pesen yang bakal ditampilin ke pemain.
  */
 public class Notification {
     
@@ -9,7 +9,7 @@ public class Notification {
     private String type; // "info", "success", "warning", "error"
     
     /**
-     * Constructs a default notification.
+     * Bikin objek notifikasi default.
      */
     public Notification() {
         this.message = "";
@@ -17,9 +17,9 @@ public class Notification {
     }
     
     /**
-     * Creates and returns a notification message.
-     * @param message the message to display
-     * @return the message string
+     * Bikin dan ngembaliin pesen notifikasi.
+     * @param message pesen yang mau ditampilin
+     * @return string pesennya
      */
     public String showMessage(String message) {
         this.message = message;
@@ -28,10 +28,10 @@ public class Notification {
     }
     
     /**
-     * Creates a notification with a specific type.
-     * @param message the message to display
-     * @param type the notification type ("info", "success", "warning", "error")
-     * @return the message string
+     * Bikin notifikasi pake tipe tertentu.
+     * @param message pesen yang mau ditampilin
+     * @param type tipe notifnya ("info", "success", "warning", "error")
+     * @return string pesennya
      */
     public String showMessage(String message, String type) {
         this.message = message;
@@ -39,7 +39,7 @@ public class Notification {
         return this.message;
     }
     
-    // --- Getters ---
+    // --- Method Getters ---
     
     public String getMessage() {
         return message;

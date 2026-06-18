@@ -1,19 +1,19 @@
 package com.yatzy.model;
 
 /**
- * Interface representing any entity that exists in the game world.
- * Provides a contract for displaying game entities.
+ * Interface buat objek-objek apa aja yang ada di dalem game.
+ * Nyediain aturan wajib buat nampilin info entitas game.
  */
 public interface GameEntity {
     
     /**
-     * Gets the name of this game entity.
-     * @return the entity name
+     * Ngambil nama dari entitas ini.
+     * @return nama entitasnya
      */
     String getName();
     
     /**
-     * Displays information about this game entity.
+     * Nampilin info atau status entitas game ini.
      */
     void display();
 }

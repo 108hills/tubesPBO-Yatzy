@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Static utility class that calculates scores for all Yatzy categories.
- * Contains one method per scoring category as shown in the UML class diagram.
+ * Kelas utilitas (static) buat ngitung skor semua kategori Yatzy.
+ * Ada satu method buat tiap kategori skor, persis kayak di UML class diagram.
  */
 public class RuleEngine {
     
-    // Category name constants
+    // Konstanta nama kategori
     public static final String ONES = "ones";
     public static final String TWOS = "twos";
     public static final String THREES = "threes";
@@ -24,23 +24,23 @@ public class RuleEngine {
     public static final String CHANCE = "chance";
     public static final String YATZY = "yatzy";
     
-    /** All category names in display order. */
+    /** Semua nama kategori diurutin sesuai tampilan. */
     public static final String[] ALL_CATEGORIES = {
         ONES, TWOS, THREES, FOURS, FIVES, SIXES,
         THREE_OF_KIND, FOUR_OF_KIND, FULL_HOUSE,
         SMALL_STRAIGHT, LARGE_STRAIGHT, CHANCE, YATZY
     };
     
-    /** Upper section categories (for bonus calculation). */
+    /** Kategori bagian atas (buat ngitung bonus). */
     public static final String[] UPPER_CATEGORIES = {
         ONES, TWOS, THREES, FOURS, FIVES, SIXES
     };
     
     /**
-     * Calculates the score for a given category with the given dice.
-     * @param category the scoring category
-     * @param dices list of dice
-     * @return the calculated score
+     * Ngitung skor buat kategori tertentu pake dadu yang disediain.
+     * @param category kategori skornya
+     * @param dices list dadu
+     * @return hasil skornya
      */
     public static int calculateScore(String category, List<Dice> dices) {
         switch (category) {
@@ -61,10 +61,10 @@ public class RuleEngine {
         }
     }
     
-    // --- Helper: count occurrences of each face value ---
+    // --- Helper: ngitung berapa kali tiap angka dadu muncul ---
     
     private static int[] getCounts(List<Dice> dices) {
-        int[] counts = new int[7]; // index 0 unused, 1-6
+        int[] counts = new int[7]; // index 0 ga dipake, cuma 1-6
         for (Dice d : dices) {
             counts[d.getValue()]++;
         }
@@ -89,41 +89,41 @@ public class RuleEngine {
         return total;
     }
     
-    // --- Upper Section ---
+    // --- Bagian Atas (Upper Section) ---
     
-    /** Sum of all dice showing 1. */
+    /** Jumlah dadu angka 1. */
     public static int calculateOnes(List<Dice> dices) {
         return sumOfValue(dices, 1);
     }
     
-    /** Sum of all dice showing 2. */
+    /** Jumlah dadu angka 2. */
     public static int calculateTwos(List<Dice> dices) {
         return sumOfValue(dices, 2);
     }
     
-    /** Sum of all dice showing 3. */
+    /** Jumlah dadu angka 3. */
     public static int calculateThrees(List<Dice> dices) {
         return sumOfValue(dices, 3);
     }
     
-    /** Sum of all dice showing 4. */
+    /** Jumlah dadu angka 4. */
     public static int calculateFours(List<Dice> dices) {
         return sumOfValue(dices, 4);
     }
     
-    /** Sum of all dice showing 5. */
+    /** Jumlah dadu angka 5. */
     public static int calculateFives(List<Dice> dices) {
         return sumOfValue(dices, 5);
     }
     
-    /** Sum of all dice showing 6. */
+    /** Jumlah dadu angka 6. */
     public static int calculateSixes(List<Dice> dices) {
         return sumOfValue(dices, 6);
     }
     
-    // --- Lower Section ---
+    // --- Bagian Bawah (Lower Section) ---
     
-    /** Sum of all dice if at least 3 share the same value, else 0. */
+    /** Jumlah semua dadu kalo ada 3 angka yang sama, kalo nggak dapet 0. */
     public static int checkThreeOfKind(List<Dice> dices) {
         int[] counts = getCounts(dices);
         for (int i = 1; i <= 6; i++) {
@@ -134,7 +134,7 @@ public class RuleEngine {
         return 0;
     }
     
-    /** Sum of all dice if at least 4 share the same value, else 0. */
+    /** Jumlah semua dadu kalo ada 4 angka yang sama, kalo nggak dapet 0. */
     public static int checkFourOfKind(List<Dice> dices) {
         int[] counts = getCounts(dices);
         for (int i = 1; i <= 6; i++) {
@@ -145,7 +145,7 @@ public class RuleEngine {
         return 0;
     }
     
-    /** 25 points if dice contain exactly 3-of-a-kind + 2-of-a-kind, else 0. */
+    /** Dapet 25 poin kalo ada 3 angka sama + 2 angka sama (Full House), kalo nggak 0. */
     public static int checkFullHouse(List<Dice> dices) {
         int[] counts = getCounts(dices);
         boolean hasThree = false;
@@ -157,17 +157,17 @@ public class RuleEngine {
         return (hasThree && hasTwo) ? 25 : 0;
     }
     
-    /** 30 points if dice contain a sequence of 4 consecutive values, else 0. */
+    /** Dapet 30 poin kalo dadunya berurutan 4 angka, kalo nggak 0. */
     public static int checkSmallStraight(List<Dice> dices) {
         int[] counts = getCounts(dices);
-        // Check for sequences: 1-2-3-4, 2-3-4-5, 3-4-5-6
+        // Cek buat urutan: 1-2-3-4, 2-3-4-5, 3-4-5-6
         if (counts[1] >= 1 && counts[2] >= 1 && counts[3] >= 1 && counts[4] >= 1) return 30;
         if (counts[2] >= 1 && counts[3] >= 1 && counts[4] >= 1 && counts[5] >= 1) return 30;
         if (counts[3] >= 1 && counts[4] >= 1 && counts[5] >= 1 && counts[6] >= 1) return 30;
         return 0;
     }
     
-    /** 40 points if dice contain 5 consecutive values (1-2-3-4-5 or 2-3-4-5-6), else 0. */
+    /** Dapet 40 poin kalo dadunya berurutan 5 angka (1-2-3-4-5 atau 2-3-4-5-6), kalo nggak 0. */
     public static int checkLargeStraight(List<Dice> dices) {
         int[] counts = getCounts(dices);
         if (counts[1] == 1 && counts[2] == 1 && counts[3] == 1 && counts[4] == 1 && counts[5] == 1) return 40;
@@ -175,12 +175,12 @@ public class RuleEngine {
         return 0;
     }
     
-    /** Sum of all dice (no conditions). */
+    /** Jumlahin aja semua dadu (nggak ada syarat). */
     public static int calculateChance(List<Dice> dices) {
         return sumAll(dices);
     }
     
-    /** 50 points if all 5 dice show the same value, else 0. */
+    /** Dapet 50 poin kalo kelima dadu angkanya kembar semua, kalo nggak 0. */
     public static int checkYatzy(List<Dice> dices) {
         int[] counts = getCounts(dices);
         for (int i = 1; i <= 6; i++) {
@@ -192,9 +192,9 @@ public class RuleEngine {
     }
     
     /**
-     * Returns the display name for a category.
-     * @param category the category key
-     * @return human-readable name
+     * Ngembaliin nama kerennya dari kategori biar enak dibaca.
+     * @param category kode kategorinya
+     * @return nama kategori yang siap tampil
      */
     public static String getCategoryDisplayName(String category) {
         switch (category) {

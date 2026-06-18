@@ -1,10 +1,10 @@
 /**
- * Yatzy Dice Game — Frontend Controller
- * Handles all UI rendering, user interactions, and API communication.
+ * Game Dadu Yatzy — Frontend Controller
+ * Ngurusin semua urusan nampilin UI, interaksi user, sama ngobrol ke API.
  */
 
 // ============================================================
-// API Communication Layer
+// Bagian Komunikasi API
 // ============================================================
 
 const API = {
@@ -13,32 +13,32 @@ const API = {
     async request(method, params = {}) {
         let url = this.BASE_URL;
         let fetchOptions = { method };
-        
+
         if (method === 'GET') {
-            // GET: use query params
+            // GET: pake query parameter
             const queryString = Object.entries(params)
                 .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
                 .join('&');
             if (queryString) url += '?' + queryString;
         } else {
-            // POST: use form body
+            // POST: pake form body
             const formBody = Object.entries(params)
                 .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
                 .join('&');
             fetchOptions.headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
             fetchOptions.body = formBody;
         }
-        
+
         try {
             const response = await fetch(url, fetchOptions);
             const data = await response.json();
-            
+
             if (data.error) {
                 console.error('API Error:', data.error);
                 UI.showNotification(data.error, 'error');
                 return null;
             }
-            
+
             return data;
         } catch (error) {
             console.error('Network error:', error);
@@ -52,9 +52,9 @@ const API = {
     },
 
     startGame(mode, p1name, p1image, p2name, p2image) {
-        return this.request('POST', { 
-            action: 'start', mode, 
-            p1name: p1name || '', 
+        return this.request('POST', {
+            action: 'start', mode,
+            p1name: p1name || '',
             p1image: p1image || '',
             p2name: p2name || '',
             p2image: p2image || ''
@@ -91,14 +91,14 @@ const API = {
 };
 
 // ============================================================
-// UI Rendering Layer
+// Bagian Nampilin UI (Rendering)
 // ============================================================
 
 const UI = {
     notificationTimer: null,
 
     /**
-     * Shows a screen by ID, hides all others.
+     * Nampilin layar sesuai ID, yang lain disembunyiin.
      */
     showScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => {
@@ -109,10 +109,26 @@ const UI = {
             target.classList.add('active', 'screen-fade-in');
             setTimeout(() => target.classList.remove('screen-fade-in'), 500);
         }
+
+        // Atur musik sesuai layarnya biar gak nabrak
+        const menuAudio = document.getElementById('menu-audio');
+        const gameAudio = document.getElementById('game-audio');
+
+        if (menuAudio && gameAudio) {
+            if (screenId === 'menu-screen' || screenId === 'setup-screen') {
+                gameAudio.pause();
+                gameAudio.currentTime = 0; // reset dari awal
+                menuAudio.play().catch(e => console.log('Autoplay menu ditahan browser'));
+            } else if (screenId === 'game-screen') {
+                menuAudio.pause();
+                menuAudio.currentTime = 0; // reset dari awal
+                gameAudio.play().catch(e => console.log('Autoplay game ditahan browser'));
+            }
+        }
     },
 
     /**
-     * Renders the full game state from server response.
+     * Nampilin status game terbaru dari respon server.
      */
     renderGameState(state) {
         if (!state) return;
@@ -122,19 +138,19 @@ const UI = {
         this.renderPlayerAvatars(state.players, state.currentTurn);
         this.renderRollInfo(state.rollsLeft, state.canRoll);
 
-        // Show notification
+        // Munculin notif kalo ada
         if (state.notification) {
             this.showNotification(state.notification);
         }
 
-        // Check game over
+        // Cek kalo game udah kelar
         if (state.gameOver) {
             this.showResult(state);
         }
     },
 
     /**
-     * Renders all 5 dice in the active row + held slots.
+     * Nampilin 5 dadu di baris aktif + slot dadu yang ditahan.
      */
     renderDice(diceData, rollsLeft, canRoll) {
         if (!diceData) return;
@@ -144,20 +160,20 @@ const UI = {
             const heldSlot = document.getElementById(`held-slot-${i}`);
 
             if (d.value === 0) {
-                // Not yet rolled
+                // Belom dikocok nih
                 diceEl.className = 'dice empty';
                 diceEl.innerHTML = '';
                 heldSlot.className = 'held-slot';
                 heldSlot.innerHTML = '';
             } else {
-                // Show dice face with pips
+                // Tunjukin titik-titik di dadu
                 diceEl.className = 'dice';
                 if (d.held) {
                     diceEl.classList.add('held');
                 }
                 diceEl.innerHTML = this.createPips(d.value);
 
-                // Update held slot
+                // Update slot dadu yang ditahan
                 if (d.held) {
                     heldSlot.className = 'held-slot occupied';
                     heldSlot.innerHTML = this.createSmallPips(d.value);
@@ -170,10 +186,10 @@ const UI = {
     },
 
     /**
-     * Creates pip dots HTML for a dice value (1-6) using CSS grid layout.
+     * Bikin elemen HTML titik-titik dadu (1-6) pake CSS grid.
      */
     createPips(value) {
-        // Grid positions for each pip: [row, col] in a 3x3 grid
+        // Posisi grid buat tiap titik: [baris, kolom] di grid 3x3
         const layouts = {
             1: [[2, 2]],
             2: [[1, 3], [3, 1]],
@@ -190,7 +206,7 @@ const UI = {
     },
 
     /**
-     * Creates smaller pips for held dice slots.
+     * Bikin versi kecil dari titik dadu buat dadu yang ditahan.
      */
     createSmallPips(value) {
         const layouts = {
@@ -211,7 +227,7 @@ const UI = {
     },
 
     /**
-     * Renders the scorecard table with all player scores.
+     * Nampilin tabel skor (scorecard) buat semua pemain.
      */
     renderScorecard(players, currentTurn, rollsLeft) {
         if (!players) return;
@@ -223,37 +239,37 @@ const UI = {
         ];
 
         players.forEach((player, pIndex) => {
-            // Update category scores
+            // Update skor per kategori
             categories.forEach(category => {
                 const cell = document.getElementById(`score-${category}-${pIndex}`);
                 if (!cell) return;
 
                 const score = player.scores[category];
-                
+
                 if (score !== null && score !== undefined) {
-                    // Score is locked in
+                    // Skor udah dikunci (locked)
                     cell.textContent = score;
                     cell.className = 'score-cell ' + (score === 0 ? 'zero-locked' : 'locked');
                     cell.onclick = null;
-                } else if (pIndex === currentTurn && player.potentialScores && 
-                           player.potentialScores[category] !== undefined && !player.isAI) {
-                    // Show potential score (clickable)
+                } else if (pIndex === currentTurn && player.potentialScores &&
+                    player.potentialScores[category] !== undefined && !player.isAI) {
+                    // Nampilin potensi skor (bisa diklik)
                     cell.textContent = player.potentialScores[category];
                     cell.className = 'score-cell clickable';
                     cell.onclick = () => chooseScore(category);
                 } else {
-                    // Empty / not available
+                    // Kosong / belom bisa diisi
                     cell.textContent = '';
                     cell.className = 'score-cell';
                     cell.onclick = null;
                 }
             });
 
-            // Update sum, bonus, total
+            // Update jumlah, bonus, sama total skor
             const sumCell = document.getElementById(`score-sum-${pIndex}`);
             const bonusCell = document.getElementById(`score-bonus-${pIndex}`);
             const totalCell = document.getElementById(`score-total-${pIndex}`);
-            
+
             if (sumCell) sumCell.textContent = player.upperSum || '';
             if (bonusCell) bonusCell.textContent = player.upperBonus > 0 ? player.upperBonus : '';
             if (totalCell) totalCell.textContent = player.total || 0;
@@ -261,7 +277,7 @@ const UI = {
     },
 
     /**
-     * Renders player avatars with active state and profile images.
+     * Nampilin avatar pemain, foto profil, sama siapa yang lagi jalan.
      */
     renderPlayerAvatars(players, currentTurn) {
         if (!players) return;
@@ -274,7 +290,7 @@ const UI = {
             const nameEl = avatarEl.querySelector('.avatar-name');
 
             if (innerEl) {
-                // Show profile image if available
+                // Nampilin foto profil kalo ada
                 if (player.profileImage && player.profileImage.startsWith('data:')) {
                     innerEl.innerHTML = `<img src="${player.profileImage}" alt="${player.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
                 } else {
@@ -291,7 +307,7 @@ const UI = {
                 avatarEl.classList.remove('active');
             }
 
-            // Also update scorecard header avatars
+            // Update juga avatar yang di atas skor (header)
             const headerAvatar = document.getElementById(`header-avatar-img-${i}`);
             if (headerAvatar) {
                 if (player.profileImage && player.profileImage.startsWith('data:')) {
@@ -305,7 +321,7 @@ const UI = {
     },
 
     /**
-     * Updates the roll info display and dice cup state.
+     * Update info sisa lemparan sama status gelas dadu.
      */
     renderRollInfo(rollsLeft, canRoll) {
         const textEl = document.getElementById('rolls-left-text');
@@ -325,7 +341,7 @@ const UI = {
     },
 
     /**
-     * Shows a notification toast.
+     * Munculin popup notifikasi (toast).
      */
     showNotification(message, type = 'info') {
         const toast = document.getElementById('notification-toast');
@@ -336,19 +352,19 @@ const UI = {
         textEl.textContent = message;
         toast.classList.remove('hidden');
 
-        // Clear existing timer
+        // Bersihin timer yang sebelumnya
         if (this.notificationTimer) {
             clearTimeout(this.notificationTimer);
         }
 
-        // Auto-hide after 3 seconds
+        // Sembunyiin otomatis abis 3 detik
         this.notificationTimer = setTimeout(() => {
             toast.classList.add('hidden');
         }, 3000);
     },
 
     /**
-     * Shows the win/lose result overlay.
+     * Nampilin layar hasil akhir (menang/kalah).
      */
     showResult(state) {
         const overlay = document.getElementById('result-overlay');
@@ -357,7 +373,7 @@ const UI = {
 
         if (!overlay || !textEl || !scoresEl) return;
 
-        // Determine if current player (P1 in single, or display winner in multi)
+        // Tentuín siapa pemenangnya (P1 kalo single, atau pemenang asli kalo multi)
         const winner = state.players[state.winnerIndex];
         const isSingle = state.mode === 'single';
         const isP1Winner = state.winnerIndex === 0;
@@ -375,8 +391,8 @@ const UI = {
             textEl.className = 'result-text won';
         }
 
-        // Show final scores
-        const scoreLines = state.players.map(p => 
+        // Nampilin skor akhir
+        const scoreLines = state.players.map(p =>
             `${p.name}: ${p.total} points`
         ).join(' • ');
         scoresEl.textContent = scoreLines;
@@ -385,7 +401,7 @@ const UI = {
     },
 
     /**
-     * Adds rolling animation to dice.
+     * Nambahin animasi muter pas dadu dikocok.
      */
     animateDiceRoll(callback) {
         const diceEls = document.querySelectorAll('.dice:not(.held):not(.empty)');
@@ -399,25 +415,25 @@ const UI = {
 };
 
 // ============================================================
-// Game Action Handlers (called from HTML onclick)
+// Handler Aksi Game (dipanggil dari onclick di HTML)
 // ============================================================
 
-let isProcessing = false; // Prevent double-clicks
+let isProcessing = false; // Biar ga kecolongan klik dobel
 let currentSetupMode = null; // 'single' or 'multi'
-let playerAvatars = { 1: '', 2: '' }; // Store base64 avatar data URLs
+let playerAvatars = { 1: '', 2: '' }; // Buat nyimpen data URL avatar base64
 
 /**
- * Shows the setup screen for the chosen mode.
+ * Nampilin layar setup sebelum mulai main.
  */
 function showSetup(mode) {
     currentSetupMode = mode;
     playerAvatars = { 1: '', 2: '' };
 
-    // Reset inputs
+    // Kosongin input form
     document.getElementById('input-name-1').value = '';
     document.getElementById('input-name-2').value = '';
-    
-    // Reset avatars
+
+    // Reset gambar avatar
     const av1 = document.getElementById('setup-avatar-1');
     const av2 = document.getElementById('setup-avatar-2');
     av1.innerHTML = '<span class="setup-avatar-text">P1</span><div class="setup-avatar-overlay">📷</div>';
@@ -435,12 +451,12 @@ function showSetup(mode) {
 }
 
 /**
- * Previews an avatar image when a file is selected.
+ * Nampilin preview foto profil pas abis milih file.
  */
 function previewAvatar(playerNum, input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const dataUrl = e.target.result;
             playerAvatars[playerNum] = dataUrl;
 
@@ -452,7 +468,7 @@ function previewAvatar(playerNum, input) {
 }
 
 /**
- * Confirms setup and starts the game with player details.
+ * Konfirmasi setup dan mulai game pake data pemain.
  */
 async function confirmSetup() {
     if (isProcessing) return;
@@ -473,15 +489,15 @@ async function confirmSetup() {
 }
 
 /**
- * Rolls all non-held dice (triggered by clicking the dice cup).
+ * Ngocok dadu yang gak ditahan (dipanggil pas ngeklik gelas dadu).
  */
 async function rollDice() {
     if (isProcessing) return;
     isProcessing = true;
 
     const cupEl = document.getElementById('btn-roll');
-    
-    // Animate the cup shake
+
+    // Jalanin animasi gelas dikocok
     if (cupEl) {
         cupEl.classList.add('cup-rolling');
         setTimeout(() => cupEl.classList.remove('cup-rolling'), 500);
@@ -497,12 +513,12 @@ async function rollDice() {
         isProcessing = false;
     }
 
-    // Release processing lock after animation
+    // Buka kuncian proses abis animasinya beres
     setTimeout(() => { isProcessing = false; }, 600);
 }
 
 /**
- * Toggles hold state on a die.
+ * Nahan atau ngelepas dadu.
  */
 async function toggleHold(index) {
     if (isProcessing) return;
@@ -517,7 +533,7 @@ async function toggleHold(index) {
 }
 
 /**
- * Chooses a scoring category to lock in.
+ * Milih kategori skor buat disimpen.
  */
 async function chooseScore(category) {
     if (isProcessing) return;
@@ -527,7 +543,7 @@ async function chooseScore(category) {
     if (state) {
         UI.renderGameState(state);
 
-        // Check if it's now AI's turn
+        // Cek apa abis ini gilirannya AI
         if (!state.gameOver) {
             checkAITurn(state);
         }
@@ -537,7 +553,7 @@ async function chooseScore(category) {
 }
 
 /**
- * Returns to the main menu.
+ * Balik ke menu utama.
  */
 function goToMenu() {
     const overlay = document.getElementById('result-overlay');
@@ -548,15 +564,15 @@ function goToMenu() {
 }
 
 /**
- * Helper: wait for ms milliseconds.
+ * Fungsi bantu: nunggu beberapa milidetik.
  */
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /**
- * Checks if the current player is AI and triggers animated AI turn.
- * Shows each step: rolling dice, holding dice, choosing score.
+ * Ngecek apa sekarang giliran AI, terus jalanin turn-nya pake animasi.
+ * Ditampilin bertahap: ngocok, milih dadu, milih skor.
  */
 async function checkAITurn(state) {
     if (!state || state.gameOver) return;
@@ -608,11 +624,11 @@ async function checkAITurn(state) {
     await delay(1000);
     const finalState = await API.aiScore();
     if (finalState) {
-        // Flash the scorecard to draw attention to the scored category
+        // Bikin scorecard kedap-kedip dikit biar keliatan bagian mana yang diskor AI
         UI.renderGameState(finalState);
         UI.showNotification(finalState.notification || 'AI scored!');
 
-        // Highlight the score cell that AI just filled
+        // Kasih highlight di sel skor yang baru diisi AI
         highlightAIScore(finalState);
 
         await delay(2000);
@@ -626,14 +642,14 @@ async function checkAITurn(state) {
 }
 
 /**
- * Highlights the scorecard cell that the AI just scored on.
+ * Ngasih efek nyala (highlight) di skor yang baru aja dipilih AI.
  */
 function highlightAIScore(state) {
-    // Find the AI player index (should be player index 1 in singleplayer)
+    // Cari index AI (biasanya index 1 kalo main singleplayer)
     const aiIndex = state.players.findIndex(p => p.isAI);
     if (aiIndex < 0) return;
 
-    // Find all score cells for the AI and flash the most recently filled ones
+    // Cari semua sel skor punya AI buat di-flash
     const categories = [
         'ones', 'twos', 'threes', 'fours', 'fives', 'sixes',
         'threeOfKind', 'fourOfKind', 'fullHouse',
@@ -643,14 +659,14 @@ function highlightAIScore(state) {
     categories.forEach(cat => {
         const cell = document.getElementById(`score-${cat}-${aiIndex}`);
         if (cell && cell.classList.contains('locked')) {
-            // Check if this cell has the flash-highlight class already
+            // Cek apa sel ini udah pernah di-highlight sebelumnya
             if (!cell.dataset.highlighted) {
                 cell.dataset.highlighted = 'true';
             }
         }
     });
 
-    // Find the cell that was JUST scored (locked but not yet highlighted)
+    // Cari sel yang BARU AJA diisi (udah dilock tapi belom di-highlight)
     categories.forEach(cat => {
         const cell = document.getElementById(`score-${cat}-${aiIndex}`);
         if (cell && cell.classList.contains('locked') && cell.dataset.highlighted === 'true' && !cell.dataset.previouslyHighlighted) {
@@ -662,11 +678,34 @@ function highlightAIScore(state) {
 }
 
 // ============================================================
-// Initialization
+// Inisialisasi pas halaman beres diload
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Show menu screen on load
+    // Set volume default
+    const menuAudio = document.getElementById('menu-audio');
+    const gameAudio = document.getElementById('game-audio');
+    if (menuAudio) menuAudio.volume = 0.5;
+    if (gameAudio) gameAudio.volume = 0.5;
+
+    // Coba mainin lagu pas klik di mana aja buat bypass autoplay block browser
+    const playMusicInit = () => {
+        // Cek layar yang lagi aktif
+        const activeScreen = document.querySelector('.screen.active');
+        const screenId = activeScreen ? activeScreen.id : 'menu-screen';
+
+        if (screenId === 'menu-screen' || screenId === 'setup-screen') {
+            if (menuAudio) menuAudio.play().catch(e => console.log(e));
+        } else if (screenId === 'game-screen') {
+            if (gameAudio) gameAudio.play().catch(e => console.log(e));
+        }
+
+        document.removeEventListener('click', playMusicInit);
+    };
+
+    document.addEventListener('click', playMusicInit);
+
+    // Langsung tampilin menu pas pertama buka web
     UI.showScreen('menu-screen');
     console.log('Yatzy game loaded successfully!');
 });

@@ -1,10 +1,10 @@
 /* =========================================================
-   YATZY DICE GAME — Design System
-   Color palette inspired by prototype: dark maroon/burgundy
-   with gold accents and green felt board
+   GAME DADU YATZY — Sistem Desain
+   Palet warna terinspirasi dari prototipe: merah marun gelap/burgundy
+   dengan aksen emas sama papan felt ijo
    ========================================================= */
 
-/* --- CSS Reset & Base --- */
+/* --- CSS Reset & Dasar --- */
 *,
 *::before,
 *::after {
@@ -14,26 +14,26 @@
 }
 
 :root {
-    /* Maroon/Burgundy palette */
+    /* Palet Merah Marun/Burgundy */
     --bg-dark: #1e0a1a;
     --bg-maroon: #3d1535;
     --bg-maroon-mid: #4a1942;
     --bg-maroon-light: #6b2c5c;
     --border-maroon: #2d0a2e;
 
-    /* Gold palette */
+    /* Palet Emas */
     --gold: #c5a55a;
     --gold-light: #e8d5a3;
     --gold-dark: #8b7340;
     --gold-shimmer: #f5e6b8;
 
-    /* Green felt / board */
+    /* Papan felt ijo */
     --felt-green: #2a5a3a;
     --felt-green-dark: #1d3d28;
     --felt-border: #8b9a5e;
     --felt-border-light: #b5c48a;
 
-    /* Button colors */
+    /* Warna tombol */
     --btn-green: #4caf50;
     --btn-green-dark: #2e7d32;
     --btn-green-shadow: #1b5e20;
@@ -41,14 +41,14 @@
     --btn-red-dark: #a13a42;
     --btn-red-shadow: #7b2a30;
 
-    /* Scorecard */
+    /* Kartu Skor */
     --card-bg: #f2e8d0;
     --card-bg-alt: #e8dcc0;
     --card-border: #8b9a5e;
     --card-text: #2a2a2a;
     --card-header-bg: #d5c9a8;
 
-    /* Dice */
+    /* Dadu */
     --dice-bg: #ffffff;
     --dice-border: #cccccc;
     --dice-shadow: rgba(0, 0, 0, 0.3);
@@ -56,11 +56,11 @@
     --dice-held-glow: #4caf50;
     --dice-slot-bg: rgba(0, 0, 0, 0.35);
 
-    /* Text */
+    /* Teks */
     --text-light: #f5f0e6;
     --text-muted: rgba(245, 240, 230, 0.6);
 
-    /* Misc */
+    /* Lain-lain */
     --transition-speed: 0.3s;
     --border-radius: 12px;
 }
@@ -71,11 +71,11 @@ body {
     height: 100%;
     overflow: hidden;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: var(--bg-dark);
+    background: var(--bg-dark) url(../assets/images/Welcome.png) center / cover no-repeat;
     color: var(--text-light);
 }
 
-/* --- Screens --- */
+/* --- Layar (Screens) --- */
 .screen {
     position: absolute;
     top: 0;
@@ -91,7 +91,7 @@ body {
 }
 
 /* =========================================================
-   MENU SCREEN
+   LAYAR MENU
    ========================================================= */
 
 #menu-screen,
@@ -104,7 +104,7 @@ body {
 }
 
 /* =========================================================
-   SETUP SCREEN
+   LAYAR SETUP
    ========================================================= */
 
 .setup-content {
@@ -275,7 +275,7 @@ body {
     font-size: 16px;
 }
 
-/* Diamond/argyle pattern background */
+/* Background motif wajik/diamond */
 .menu-background {
     position: absolute;
     top: 0;
@@ -283,11 +283,11 @@ body {
     width: 100%;
     height: 100%;
     background:
-        /* Dark gradient overlay */
+        /* Efek gradasi gelap di atas */
         radial-gradient(ellipse at center,
             rgba(74, 25, 66, 0.3) 0%,
             rgba(30, 10, 26, 0.8) 100%),
-        /* Diamond pattern */
+        /* Motif wajik */
         linear-gradient(45deg, var(--bg-maroon) 25%, transparent 25%),
         linear-gradient(-45deg, var(--bg-maroon) 25%, transparent 25%),
         linear-gradient(45deg, transparent 75%, var(--bg-maroon) 75%),
@@ -305,7 +305,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    /* Subtle vignette */
+    /* Efek gelap di pinggiran (vignette) tipis */
     background: radial-gradient(ellipse at center, transparent 40%, rgba(10, 2, 10, 0.6) 100%);
     z-index: 1;
 }
@@ -320,7 +320,7 @@ body {
     zoom: 1.4;
 }
 
-/* Gold Title */
+/* Judul Warna Emas */
 .title-container {
     position: relative;
     display: inline-block;
@@ -358,7 +358,7 @@ body {
     }
 }
 
-/* Sparkle effects */
+/* Efek kelap-kelip */
 .sparkle {
     position: absolute;
     color: var(--gold-light);
@@ -401,7 +401,7 @@ body {
     }
 }
 
-/* Menu Buttons */
+/* Tombol-tombol di Menu */
 .menu-buttons {
     display: flex;
     gap: 40px;
@@ -469,7 +469,7 @@ body {
 }
 
 /* =========================================================
-   GAME SCREEN
+   LAYAR UTAMA GAME
    ========================================================= */
 
 #game-screen {
@@ -490,7 +490,7 @@ body {
     gap: 16px;
 }
 
-/* --- Player Avatars --- */
+/* --- Avatar Pemain --- */
 .player-avatar {
     position: absolute;
     z-index: 10;
@@ -568,7 +568,7 @@ body {
     white-space: nowrap;
 }
 
-/* --- Game Board --- */
+/* --- Papan Game --- */
 .game-board {
     flex: 1;
     margin-left: 90px;
@@ -599,24 +599,24 @@ body {
     min-width: 560px;
     min-height: 420px;
     position: relative;
-    /* Outer gold border like prototype */
+    /* Garis pinggir emas kayak di prototipe */
     outline: 4px solid var(--felt-border-light);
     outline-offset: 3px;
 }
 
-/* --- Dice Rows --- */
+/* --- Barisan Dadu --- */
 .dice-row {
     display: flex;
     gap: 12px;
     justify-content: center;
 }
 
-/* Held dice slots (top) */
+/* Slot buat dadu yang ditahan (baris atas) */
 .held-slot {
-    width: 60px;
-    height: 60px;
+    width: 68px;
+    height: 68px;
     background: var(--dice-slot-bg);
-    border-radius: 10px;
+    border-radius: 12px;
     border: 2px dashed rgba(255, 255, 255, 0.15);
     display: flex;
     align-items: center;
@@ -630,9 +630,14 @@ body {
     box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
 }
 
-/* Active dice (bottom row) */
+/* Dadu yang aktif dimainin (baris bawah) */
 .dice-wrapper {
     position: relative;
+    width: 68px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .dice {
@@ -702,7 +707,7 @@ body {
     }
 }
 
-/* Dice pips */
+/* Titik-titik di dadu */
 .pip {
     width: 12px;
     height: 12px;
@@ -713,7 +718,7 @@ body {
     justify-self: center;
 }
 
-/* --- Roll Info --- */
+/* --- Info Sisa Lemparan --- */
 .roll-info {
     text-align: center;
     padding: 4px 0;
@@ -727,7 +732,7 @@ body {
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* --- Dice Cup (clickable — replaces roll button) --- */
+/* --- Gelas Dadu (bisa diklik — buat gantiin tombol roll) --- */
 .dice-cup {
     position: absolute;
     right: -30px;
@@ -832,7 +837,7 @@ body {
 }
 
 /* =========================================================
-   SCORECARD
+   KARTU SKOR (SCORECARD)
    ========================================================= */
 
 .scorecard-container {
@@ -964,7 +969,7 @@ body {
     font-style: normal;
 }
 
-/* Sum / Bonus / Total rows */
+/* Baris Jumlah / Bonus / Total */
 .sum-row,
 .bonus-row {
     background: rgba(139, 154, 94, 0.15) !important;
@@ -982,7 +987,7 @@ body {
 }
 
 /* =========================================================
-   NOTIFICATION TOAST
+   NOTIFIKASI TOAST (Popup)
    ========================================================= */
 
 .notification-toast {
@@ -1021,7 +1026,7 @@ body {
 }
 
 /* =========================================================
-   RESULT OVERLAY (Win/Lose)
+   LAYAR HASIL AKHIR (Menang/Kalah)
    ========================================================= */
 
 .result-overlay {
@@ -1118,10 +1123,10 @@ body {
 }
 
 /* =========================================================
-   ANIMATIONS & UTILITIES
+   ANIMASI & UTILITAS
    ========================================================= */
 
-/* Screen transitions */
+/* Efek transisi antar layar */
 .screen-fade-in {
     animation: screenFadeIn 0.5s ease-out;
 }
@@ -1136,7 +1141,7 @@ body {
     }
 }
 
-/* AI thinking indicator */
+/* Indikator pas AI lagi mikir */
 .ai-thinking {
     position: absolute;
     top: 50%;
@@ -1180,7 +1185,7 @@ body {
     }
 }
 
-/* Responsive */
+/* Tampilan Responsif buat layar kecil */
 @media (max-width: 900px) {
     #game-screen {
         flex-direction: column;
@@ -1233,7 +1238,7 @@ body {
 }
 
 /* =========================================================
-   AI SCORE FLASH ANIMATION
+   ANIMASI KILAT PAS AI MENCET SKOR
    ========================================================= */
 
 .ai-score-flash {
@@ -1259,7 +1264,7 @@ body {
     }
 }
 
-/* AI turn - disable dice clicks and dim board slightly */
+/* Giliran AI - nonaktifin klik dadu sama bikin papan agak redup dikit */
 .ai-active .dice {
     cursor: not-allowed !important;
     pointer-events: none;
