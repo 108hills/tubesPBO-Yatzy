@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yatzy - Dice Game</title>
+    <meta name="description" content="Play the classic Yatzy dice game. Challenge the AI in singleplayer or play with a friend in local multiplayer pass-and-play mode.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ============ MENU SCREEN ============ -->
+    <div id="menu-screen" class="screen active">
+        <div class="menu-background"></div>
+        <div class="menu-content">
+            <div class="title-container">
+                <h1 class="game-title">YATZY</h1>
+                <div class="sparkle sparkle-1">✦</div>
+                <div class="sparkle sparkle-2">✦</div>
+                <div class="sparkle sparkle-3">✧</div>
+            </div>
+            <div class="menu-buttons">
+                <button id="btn-singleplayer" class="menu-btn btn-green" onclick="showSetup('single')">
+                    Singleplayer
+                </button>
+                <button id="btn-multiplayer" class="menu-btn btn-red" onclick="showSetup('multi')">
+                    Multiplayer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ SETUP SCREEN ============ -->
+    <div id="setup-screen" class="screen">
+        <div class="menu-background"></div>
+        <div class="setup-content">
+            <h2 class="setup-title">Player Setup</h2>
+
+            <!-- Player 1 Setup -->
+            <div class="setup-player" id="setup-player-1">
+                <div class="setup-avatar-wrapper">
+                    <div class="setup-avatar" id="setup-avatar-1" onclick="document.getElementById('avatar-input-1').click()">
+                        <span class="setup-avatar-text">P1</span>
+                        <div class="setup-avatar-overlay">📷</div>
+                    </div>
+                    <input type="file" id="avatar-input-1" accept="image/*" hidden onchange="previewAvatar(1, this)">
+                    <span class="setup-avatar-label">Click to change</span>
+                </div>
+                <div class="setup-fields">
+                    <label class="setup-label" for="input-name-1">Player 1</label>
+                    <input type="text" id="input-name-1" class="setup-input" placeholder="Enter your name..." maxlength="20" autocomplete="off">
+                </div>
+            </div>
+
+            <!-- Player 2 Setup (shown only in multiplayer) -->
+            <div class="setup-player" id="setup-player-2" style="display: none;">
+                <div class="setup-avatar-wrapper">
+                    <div class="setup-avatar" id="setup-avatar-2" onclick="document.getElementById('avatar-input-2').click()">
+                        <span class="setup-avatar-text">P2</span>
+                        <div class="setup-avatar-overlay">📷</div>
+                    </div>
+                    <input type="file" id="avatar-input-2" accept="image/*" hidden onchange="previewAvatar(2, this)">
+                    <span class="setup-avatar-label">Click to change</span>
+                </div>
+                <div class="setup-fields">
+                    <label class="setup-label" for="input-name-2">Player 2</label>
+                    <input type="text" id="input-name-2" class="setup-input" placeholder="Enter your name..." maxlength="20" autocomplete="off">
+                </div>
+            </div>
+
+            <!-- AI indicator (shown only in singleplayer) -->
+            <div class="setup-player setup-ai" id="setup-ai-indicator" style="display: none;">
+                <div class="setup-avatar-wrapper">
+                    <div class="setup-avatar ai-avatar">
+                        <span class="setup-avatar-text">🤖</span>
+                    </div>
+                </div>
+                <div class="setup-fields">
+                    <label class="setup-label">Opponent</label>
+                    <span class="setup-ai-name">AI Player</span>
+                </div>
+            </div>
+
+            <div class="setup-buttons">
+                <button class="menu-btn btn-red setup-back-btn" onclick="goToMenu()">Back</button>
+                <button id="btn-start-game" class="menu-btn btn-green" onclick="confirmSetup()">Start Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ GAME SCREEN ============ -->
+    <div id="game-screen" class="screen">
+        
+        <!-- Player Avatars -->
+        <div id="player-avatar-1" class="player-avatar avatar-top-left">
+            <div class="avatar-ring">
+                <div class="avatar-inner">P1</div>
+            </div>
+            <span class="avatar-name">Player 1</span>
+        </div>
+        <div id="player-avatar-2" class="player-avatar avatar-bottom-left">
+            <div class="avatar-ring">
+                <div class="avatar-inner">P2</div>
+            </div>
+            <span class="avatar-name">Player 2</span>
+        </div>
+
+        <!-- Game Board -->
+        <div class="game-board">
+            <div class="board-inner">
+                <!-- Held Dice Row (top) -->
+                <div class="dice-row held-row">
+                    <div class="held-slot" id="held-slot-0"></div>
+                    <div class="held-slot" id="held-slot-1"></div>
+                    <div class="held-slot" id="held-slot-2"></div>
+                    <div class="held-slot" id="held-slot-3"></div>
+                    <div class="held-slot" id="held-slot-4"></div>
+                </div>
+
+                <!-- Roll Info -->
+                <div class="roll-info">
+                    <span id="rolls-left-text">3 Rolls Left</span>
+                </div>
+
+                <!-- Active Dice Row (bottom) -->
+                <div class="dice-row active-row">
+                    <div class="dice-wrapper" id="dice-wrapper-0">
+                        <div class="dice" id="dice-0" onclick="toggleHold(0)"></div>
+                    </div>
+                    <div class="dice-wrapper" id="dice-wrapper-1">
+                        <div class="dice" id="dice-1" onclick="toggleHold(1)"></div>
+                    </div>
+                    <div class="dice-wrapper" id="dice-wrapper-2">
+                        <div class="dice" id="dice-2" onclick="toggleHold(2)"></div>
+                    </div>
+                    <div class="dice-wrapper" id="dice-wrapper-3">
+                        <div class="dice" id="dice-3" onclick="toggleHold(3)"></div>
+                    </div>
+                    <div class="dice-wrapper" id="dice-wrapper-4">
+                        <div class="dice" id="dice-4" onclick="toggleHold(4)"></div>
+                    </div>
+                </div>
+
+                <!-- Dice Cup (clickable to roll) -->
+                <div class="dice-cup" id="btn-roll" onclick="rollDice()" title="Click to roll dice!">
+                    <div class="cup-rim"></div>
+                    <div class="cup-body">
+                        <span class="cup-label">Roll!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scorecard -->
+        <div class="scorecard-container">
+            <table class="scorecard" id="scorecard-table">
+                <thead>
+                    <tr>
+                        <th class="cat-header">Category</th>
+                        <th class="player-header" id="score-header-0">
+                            <div class="header-avatar" id="header-avatar-img-0">P1</div>
+                        </th>
+                        <th class="player-header" id="score-header-1">
+                            <div class="header-avatar" id="header-avatar-img-1">P2</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="score-row" data-category="ones">
+                        <td class="cat-name">Ones</td>
+                        <td class="score-cell" id="score-ones-0"></td>
+                        <td class="score-cell" id="score-ones-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="twos">
+                        <td class="cat-name">Twos</td>
+                        <td class="score-cell" id="score-twos-0"></td>
+                        <td class="score-cell" id="score-twos-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="threes">
+                        <td class="cat-name">Threes</td>
+                        <td class="score-cell" id="score-threes-0"></td>
+                        <td class="score-cell" id="score-threes-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="fours">
+                        <td class="cat-name">Fours</td>
+                        <td class="score-cell" id="score-fours-0"></td>
+                        <td class="score-cell" id="score-fours-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="fives">
+                        <td class="cat-name">Fives</td>
+                        <td class="score-cell" id="score-fives-0"></td>
+                        <td class="score-cell" id="score-fives-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="sixes">
+                        <td class="cat-name">Sixes</td>
+                        <td class="score-cell" id="score-sixes-0"></td>
+                        <td class="score-cell" id="score-sixes-1"></td>
+                    </tr>
+                    <tr class="score-row sum-row">
+                        <td class="cat-name"><strong>Sum</strong></td>
+                        <td class="score-cell" id="score-sum-0"></td>
+                        <td class="score-cell" id="score-sum-1"></td>
+                    </tr>
+                    <tr class="score-row bonus-row">
+                        <td class="cat-name"><strong>Bonus</strong></td>
+                        <td class="score-cell" id="score-bonus-0"></td>
+                        <td class="score-cell" id="score-bonus-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="threeOfKind">
+                        <td class="cat-name">Three of a kind</td>
+                        <td class="score-cell" id="score-threeOfKind-0"></td>
+                        <td class="score-cell" id="score-threeOfKind-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="fourOfKind">
+                        <td class="cat-name">Four of a kind</td>
+                        <td class="score-cell" id="score-fourOfKind-0"></td>
+                        <td class="score-cell" id="score-fourOfKind-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="fullHouse">
+                        <td class="cat-name">Full house</td>
+                        <td class="score-cell" id="score-fullHouse-0"></td>
+                        <td class="score-cell" id="score-fullHouse-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="smallStraight">
+                        <td class="cat-name">Small straight</td>
+                        <td class="score-cell" id="score-smallStraight-0"></td>
+                        <td class="score-cell" id="score-smallStraight-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="largeStraight">
+                        <td class="cat-name">Large Straight</td>
+                        <td class="score-cell" id="score-largeStraight-0"></td>
+                        <td class="score-cell" id="score-largeStraight-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="chance">
+                        <td class="cat-name">Chance</td>
+                        <td class="score-cell" id="score-chance-0"></td>
+                        <td class="score-cell" id="score-chance-1"></td>
+                    </tr>
+                    <tr class="score-row" data-category="yatzy">
+                        <td class="cat-name">Yatzy</td>
+                        <td class="score-cell" id="score-yatzy-0"></td>
+                        <td class="score-cell" id="score-yatzy-1"></td>
+                    </tr>
+                    <tr class="score-row total-row">
+                        <td class="cat-name"><strong>TOTAL SCORE</strong></td>
+                        <td class="score-cell total-cell" id="score-total-0"></td>
+                        <td class="score-cell total-cell" id="score-total-1"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Turn Notification -->
+        <div id="notification-toast" class="notification-toast hidden">
+            <span id="notification-text"></span>
+        </div>
+    </div>
+
+    <!-- ============ RESULT OVERLAY ============ -->
+    <div id="result-overlay" class="result-overlay hidden">
+        <div class="result-content">
+            <h2 id="result-text" class="result-text">YOU WON!</h2>
+            <p id="result-scores" class="result-scores"></p>
+            <button id="btn-play-again" class="menu-btn btn-green" onclick="goToMenu()">
+                Play Again
+            </button>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
