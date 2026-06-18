@@ -9,16 +9,22 @@ import java.util.Random;
  * Ngewarisin kelas Player buat nunjukin konsep inheritance (AIPlayer → Player → User).
  */
 public class AIPlayer extends Player {
-    
-    private static final List<String> AI_NAMES = Arrays.asList("BOT - Imrong", "BOT - Kadhim", "BOT - Rafi", "BOT - Arsha", "BOT - Hamud", "BOT - Pedil");
-    private static final Random RANDOM = new Random();
 
     /**
      * Bikin AIPlayer dengan profil AI bawaan.
      * @param id ID unik buat pemainnya
      */
     public AIPlayer(int id) {
-        super(id, AI_NAMES.get(RANDOM.nextInt(AI_NAMES.size())), "ai");
+        super(id, generateAIName(), "ai");
+    }
+    
+    /**
+     * Generate nama AI secara random dari daftar nama.
+     * @return nama AI yang dipilih random
+     */
+    private static String generateAIName() {
+        List<String> aiNames = Arrays.asList("BOT - Imrong", "BOT - Kadhim", "BOT - Rafi", "BOT - Arsha", "BOT - Hamud", "BOT - Pedil");
+        return aiNames.get(new Random().nextInt(aiNames.size()));
     }
     
     /**
@@ -49,7 +55,20 @@ public class AIPlayer extends Player {
         
         // Kalo semua kategori ngasilin skor 0, korbanin kategori yang paling gak berharga
         if (bestScore == 0) {
-            bestCategory = chooseSacrificeCategory(scoreCard);
+            String[] sacrificeOrder = {
+                ScoreCard.ONES, ScoreCard.TWOS, ScoreCard.THREES,
+                ScoreCard.CHANCE, ScoreCard.FOURS,
+                ScoreCard.SMALL_STRAIGHT, ScoreCard.FIVES,
+                ScoreCard.THREE_OF_KIND, ScoreCard.FOUR_OF_KIND,
+                ScoreCard.SIXES, ScoreCard.FULL_HOUSE,
+                ScoreCard.LARGE_STRAIGHT, ScoreCard.YATZY
+            };
+            for (String category : sacrificeOrder) {
+                if (scoreCard.isCategoryAvailable(category)) {
+                    bestCategory = category;
+                    break;
+                }
+            }
         }
         
         // Kunci skornya
@@ -58,29 +77,6 @@ public class AIPlayer extends Player {
         }
         
         return bestCategory;
-    }
-    
-    /**
-     * Pas semua kategori bakal ngasilin skor 0, milih kategori yang paling gak guna buat dikorbanin.
-     * Prioritasnya: ngorbanin kategori atas yang nilainya kecil dulu.
-     */
-    private String chooseSacrificeCategory(ScoreCard scoreCard) {
-        // Urutan ngorbanin (dari yang paling gak penting)
-        String[] sacrificeOrder = {
-            ScoreCard.ONES, ScoreCard.TWOS, ScoreCard.THREES,
-            ScoreCard.CHANCE, ScoreCard.FOURS,
-            ScoreCard.SMALL_STRAIGHT, ScoreCard.FIVES,
-            ScoreCard.THREE_OF_KIND, ScoreCard.FOUR_OF_KIND,
-            ScoreCard.SIXES, ScoreCard.FULL_HOUSE,
-            ScoreCard.LARGE_STRAIGHT, ScoreCard.YATZY
-        };
-        
-        for (String category : sacrificeOrder) {
-            if (scoreCard.isCategoryAvailable(category)) {
-                return category;
-            }
-        }
-        return null;
     }
     
     /**
