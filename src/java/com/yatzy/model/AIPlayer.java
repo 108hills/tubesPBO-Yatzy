@@ -84,31 +84,48 @@ public class AIPlayer extends Player {
     }
     
     /**
-     * AI mikir dadu mana yang mau ditahan berdasarin strategi dasar.
-     * Nahan dadu yang nilainya paling sering muncul biar gampang dapet skor gede.
+     * AI mikir dadu mana yang mau ditahan berdasarin kategori skor yang masih tersedia.
+     * Ngecek scoreCard buat tau kategori mana yang paling nguntungin,
+     * terus nahan dadu yang cocok buat dapetin skor tertinggi.
      * @param diceSet set dadu yang sekarang
      */
     public void decideDiceHolds(DiceSet diceSet) {
+        ScoreCard scoreCard = getScoreCard();
         List<Dice> dices = diceSet.getDices();
+        
+        // Hitung frekuensi tiap angka dadu
         int[] counts = new int[7];
         for (Dice d : dices) {
             counts[d.getValue()]++;
         }
         
-        // Cari angka dadu mana yang paling sering muncul
-        int bestValue = 1;
-        int bestCount = 0;
-        for (int i = 1; i <= 6; i++) {
-            if (counts[i] > bestCount) {
-                bestCount = counts[i];
-                bestValue = i;
+        // Cari kategori yang masih available dan kasih skor paling tinggi
+        String bestCategory = null;
+        int bestScore = -1;
+        for (String category : ScoreCard.ALL_CATEGORIES) {
+            if (scoreCard.isCategoryAvailable(category)) {
+                int score = scoreCard.calculateScore(category, dices);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestCategory = category;
+                }
             }
         }
         
-        // Tahan dadu yang angkanya paling banyak (strategi simpel aja)
-        if (bestCount >= 2) {
+        // Tentuin angka dadu mana yang mau ditahan berdasarkan kategori terbaik
+        int holdValue = -1;
+        int holdCount = 0;
+        for (int i = 1; i <= 6; i++) {
+            if (counts[i] > holdCount) {
+                holdCount = counts[i];
+                holdValue = i;
+            }
+        }
+        
+        // Tahan dadu yang angkanya paling banyak (buat ngejar kategori terbaik)
+        if (holdCount >= 2 && bestCategory != null) {
             for (int i = 0; i < dices.size(); i++) {
-                if (dices.get(i).getValue() == bestValue) {
+                if (dices.get(i).getValue() == holdValue) {
                     diceSet.holdDice(i);
                 } else {
                     diceSet.releaseDice(i);
